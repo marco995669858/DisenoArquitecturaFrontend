@@ -1,0 +1,52 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <input pInputText id="on_tipoDocumento" autocomplete="off" formControlName="nombre"
+                    [ngClass]="{'ng-dirty ng-invalid': submite && f['nombre'].errors}" class="w-full" />
+                <label for="on_tipoDocumento">Tipo de Documento</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['nombre'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['nombre'].errors['required']) {
+            <span>Ingrese un tipo de documento.</span>
+            }
+            @if (f['nombre'].errors['minlength']) {
+            <span>El tipo de documento debe tener mínimo 3 caracteres.</span>
+            }
+            @if (f['nombre'].errors['maxlength']) {
+            <span>El tipo de documento debe tener máximo 50 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <input pInputText id="on_abreviatura" autocomplete="off" formControlName="abreviatura"
+                    [ngClass]="{'ng-dirty ng-invalid': submite && f['abreviatura'].errors}" class="w-full" />
+                <label for="on_abreviatura">Abreviatura</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['abreviatura'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['abreviatura'].errors['required']) {
+            <span>Ingrese una abreviatura.</span>
+            }
+            @if (f['abreviatura'].errors['minlength']) {
+            <span>La abreviatura debe tener mínimo 3 caracteres.</span>
+            }
+            @if (f['abreviatura'].errors['maxlength']) {
+            <span>La abreviatura debe tener máximo 10 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

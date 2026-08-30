@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'primeicons/primeicons.css';
+@use '@/assets/layout/layout.scss';
+@use '@/assets/demo/demo.scss';
+
+.p-dialog .p-dialog-header {
+  padding-left: 50px;
+}
+
+.p-datatable-frozen-tbody {
+    font-weight: bold;
+}
+
+.p-datatable-scrollable .p-frozen-column {
+    font-weight: bold;
+}

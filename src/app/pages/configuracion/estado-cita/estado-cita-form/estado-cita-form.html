@@ -1,0 +1,42 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <input pInputText id="on_estadoCita" autocomplete="off" formControlName="nombre"
+                    [ngClass]="{'ng-dirty ng-invalid': submite && f['nombre'].errors}" class="w-full" />
+                <label for="on_estadoCita">Estado Cita</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['nombre'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['nombre'].errors['required']) {
+            <span>Ingrese un estado de la cita.</span>
+            }
+            @if (f['nombre'].errors['minlength']) {
+            <span>El estado de la cita debe tener mínimo 3 caracteres.</span>
+            }
+            @if (f['nombre'].errors['maxlength']) {
+            <span>El estado de la cita debe tener máximo 50 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col w-full">
+        <label for="on_color">Color</label>
+        <p-colorpicker formControlName="colorHex" id="on_color" [appendTo]="'body'" defaultColor="989898"
+            [ngClass]="{'ng-dirty ng-invalid': submite && f['colorHex'].errors}" />
+        @if (submite && f['colorHex'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['colorHex'].errors['required']) {
+            <span>El color es requerido.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

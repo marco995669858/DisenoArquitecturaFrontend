@@ -1,0 +1,18 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-2">Configuración de Maestros</div>
+    <p class="text-500 mb-4">Gestiona los catálogos y parámetros principales del sistema.</p>
+
+    <p-tabs [value]="activeTab()">
+        <p-tablist>
+            @for (tab of tabs; track tab.id) {
+            <p-tab [value]="tab.id" [routerLink]="tab.id" (click)="activeTab.set(tab.id)">
+                {{ tab.label }}
+            </p-tab>
+            }
+        </p-tablist>
+    </p-tabs>
+
+    <div class="content-area mt-4">
+        <router-outlet></router-outlet>
+    </div>
+</div>

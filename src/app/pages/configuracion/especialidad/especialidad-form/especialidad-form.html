@@ -1,0 +1,49 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <input pInputText id="on_especialidad" autocomplete="off" formControlName="nombre"
+                    [ngClass]="{'ng-dirty ng-invalid': submite && f['nombre'].errors}" class="w-full" />
+                <label for="on_especialidad">Especialidad</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['nombre'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['nombre'].errors['required']) {
+            <span>Ingrese una especialidad.</span>
+            }
+            @if (f['nombre'].errors['minlength']) {
+            <span>La especialidad debe tener mínimo 5 caracteres.</span>
+            }
+            @if (f['nombre'].errors['maxlength']) {
+            <span>La especialidad debe tener máximo 50 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <textarea pTextarea [autoResize]="true" rows="3" id="on_descripcion" autocomplete="off"
+                    formControlName="descripcion" class="w-full"></textarea>
+                <label for="on_descripcion">Descripción</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['descripcion'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['descripcion'].errors['minlength']) {
+            <span>La descripción debe tener mínimo 5 caracteres.</span>
+            }
+            @if (f['descripcion'].errors['maxlength']) {
+            <span>La descripción debe tener máximo 500 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

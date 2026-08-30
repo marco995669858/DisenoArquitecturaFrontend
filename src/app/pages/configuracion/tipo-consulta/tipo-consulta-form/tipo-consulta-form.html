@@ -1,0 +1,67 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <input pInputText id="on_tipoConsulta" autocomplete="off" formControlName="nombre"
+                    [ngClass]="{'ng-dirty ng-invalid': submite && f['nombre'].errors}" class="w-full" />
+                <label for="on_tipoConsulta">Tipo de Consulta</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['nombre'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['nombre'].errors['required']) {
+            <span>Ingrese un tipo de consulta.</span>
+            }
+            @if (f['nombre'].errors['minlength']) {
+            <span>El tipo de consulta debe tener mínimo 3 caracteres.</span>
+            }
+            @if (f['nombre'].errors['maxlength']) {
+            <span>El tipo de consulta debe tener máximo 50 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <p-datepicker id="on_duracionEstimadaMinutos" formControlName="duracionEstimadaMinutos"
+                    [showTime]="true" [timeOnly]="true" hourFormat="24" placeholder="00:00" inputId="duracion"
+                    inputId="duracion" class="w-full"
+                    [ngClass]="{'ng-dirty ng-invalid': submite && f['duracionEstimadaMinutos'].errors}"
+                    [appendTo]="'body'">
+                </p-datepicker>
+                <label for="on_duracionEstimadaMinutos">Duración Estimada (Horas:Minutos)</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['duracionEstimadaMinutos'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['duracionEstimadaMinutos'].errors['required']) {
+            <span>Ingrese una estimación en minutos.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-inputgroup>
+            <p-floatlabel variant="on">
+                <p-inputnumber id="on_precioBase" formControlName="precioBase" inputId="currency-pe" mode="currency"
+                    currency="PEN" locale="en-PE" />
+                <label for="on_precioBase">Precio Base</label>
+            </p-floatlabel>
+        </p-inputgroup>
+        @if (submite && f['precioBase'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['precioBase'].errors['required']) {
+            <span>Ingrese un precio base.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

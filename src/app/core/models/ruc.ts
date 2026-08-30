@@ -1,0 +1,27 @@
+export interface Ruc {
+  ruc?:string;
+  razonSocial?:string;
+  nombreComercial?:string;
+  telefonos?:[];
+  tipo?:string;
+  estado?:string;
+  condicion?:string;
+  direccion?:string;
+  departamento?:string;
+  provincia?:string;
+  distrito?:string;
+  fechaInscripcion?:string;
+  sistContabilidad?:string;
+  actExterior?:string;
+  actEconomicas?:[];
+  cpPago?:[];
+  sistElectronica?:[];
+  fechaEmisorFe?:string;
+  cpeElectronico?:string;
+  fechaPle?:string;
+  padrones?:[];
+  fechaBaja?:string;
+  profesion?:string;
+  ubigeo?:string;
+  capital?:string;
+}
