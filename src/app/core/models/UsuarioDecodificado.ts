@@ -1,7 +1,6 @@
 export interface UsuarioDecodificado {
   sub: string;
-  idEmpresa: number;
-  tipoNegocio: string;
+  idUsuario: number;
   roles: Roles[];
   exp: number;
 }

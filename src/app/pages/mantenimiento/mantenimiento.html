@@ -1,0 +1,56 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">MANTENIMIENTO</div>
+    <p-toolbar class="mb-6">
+        <ng-template #start></ng-template>
+        <ng-template #end>
+            @if (permisosService.puedeEscribir('MANTENIMIENTO')) {
+            <p-button label="Agregar Mantenimiento" icon="pi pi-plus" (onClick)="openModal()" />
+            }
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt1 [value]="mantenimientos" dataKey="idMantenimiento" [rows]="10" [rowHover]="true" [showGridlines]="true"
+        [paginator]="true" [globalFilterFields]="['numeroUnidad', 'descripcion', 'proveedor']" [rowsPerPageOptions]="[10, 25, 50]"
+        responsiveLayout="scroll">
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Limpiar" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                    <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar mantenimiento" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 8rem">Fecha</th>
+                <th style="min-width: 8rem">Unidad</th>
+                <th style="min-width: 16rem">Descripción</th>
+                <th style="min-width: 10rem">Tipo</th>
+                <th style="min-width: 10rem">Proveedor</th>
+                <th style="min-width: 8rem">Monto</th>
+                <th style="min-width: 8rem">Imputable</th>
+                <th style="min-width: 10rem">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-m>
+            <tr>
+                <td>{{ m.fechaMantenimiento }}</td>
+                <td class="font-semibold">{{ m.numeroUnidad ?? 'Áreas comunes' }}</td>
+                <td>{{ m.descripcion }}</td>
+                <td><p-tag [value]="m.tipoGasto" severity="secondary" /></td>
+                <td>{{ m.proveedor }}</td>
+                <td class="font-semibold">S/ {{ m.monto | number: '1.2-2' }}</td>
+                <td><p-tag [value]="m.imputableInquilino ? 'Sí' : 'No'" [severity]="m.imputableInquilino ? 'warn' : 'secondary'" /></td>
+                <td>
+                    @if (permisosService.puedeEscribir('MANTENIMIENTO')) {
+                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="openModal(m)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="onClicAbrirDialogoEliminar(m.idMantenimiento)" />
+                    }
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr><td colspan="8">No existen registros de mantenimiento.</td></tr>
+        </ng-template>
+    </p-table>
+</div>

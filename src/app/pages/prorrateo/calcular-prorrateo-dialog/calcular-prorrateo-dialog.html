@@ -1,0 +1,23 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickCalcular()">
+    <p class="text-surface-500 text-sm -mt-2">
+        Calcula el consumo de cada unidad y reparte el excedente de áreas comunes a partir de las lecturas y el recibo registrados para el periodo.
+    </p>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_periodo" autocomplete="off" formControlName="periodo" placeholder="2026-09" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['periodo'].errors }" />
+            <label for="on_periodo">Periodo (AAAA-MM)</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_tipoServicio" [options]="servicios" optionLabel="label" optionValue="value" formControlName="tipoServicio" class="w-full" appendTo="body" />
+            <label for="on_tipoServicio">Servicio</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Calcular" icon="pi pi-calculator" type="submit" [loading]="calculando" />
+    </div>
+</form>

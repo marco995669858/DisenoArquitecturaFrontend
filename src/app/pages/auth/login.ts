@@ -1,7 +1,7 @@
 import { AuthService } from '@/app/core/services/auth-service';
 import { NotificacionService } from '@/app/core/services/notificacion-service';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -9,6 +9,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
+import * as QRCode from 'qrcode';
 
 @Component({
     selector: 'app-login',
@@ -37,10 +38,11 @@ import { RippleModule } from 'primeng/ripple';
                                     />
                                 </g>
                             </svg>
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">¡bienvenido a PrimeLand!</div>
+                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Dataverse Rentals</div>
                             <span class="text-muted-color font-medium">Inicie sesión para continuar</span>
                         </div>
 
+                        @if (paso === 'credenciales') {
                         <div [formGroup]="formGroup">
                             <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Usuario</label>
                             <input pInputText id="email1" type="text" placeholder="Usuario" class="w-full md:w-120 mb-8" formControlName="username" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['username'].errors }" />
@@ -73,15 +75,38 @@ import { RippleModule } from 'primeng/ripple';
                                 </div>
                             }
 
-                            <div class="flex items-center justify-between mt-2 mb-8 gap-8">
-                                <div class="flex items-center">
-                                    <p-checkbox id="rememberme1" binary class="mr-2"></p-checkbox>
-                                    <label for="rememberme1">Recuérdame</label>
-                                </div>
-                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">¿Olvidaste tu contraseña?</span>
-                            </div>
                             <p-button label="Iniciar sesión" styleClass="w-full" (onClick)="onLogin()"></p-button>
                         </div>
+                        } @else {
+                        <div class="text-center">
+                            @if (mfaSetupRequerido) {
+                            <div class="text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Configure la verificación en dos pasos</div>
+                            <p class="text-muted-color mb-4">Escanee este código con Google Authenticator, Microsoft Authenticator o similar. Es obligatorio la primera vez; después podrá desactivarlo desde su perfil si no lo quiere usar.</p>
+                            @if (qrDataUrl) {
+                            <img [src]="qrDataUrl" alt="Código QR de verificación en dos pasos" class="mx-auto mb-4" style="width: 200px; height: 200px" />
+                            }
+                            <p class="text-muted-color text-sm mb-4">¿No puede escanear? Ingrese esta clave manualmente en su app: <br /><span class="font-mono font-medium">{{ secretoManual }}</span></p>
+                            } @else {
+                            <div class="text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Verificación en dos pasos</div>
+                            <p class="text-muted-color mb-4">Ingrese el código de 6 dígitos de su app de autenticación.</p>
+                            }
+
+                            <input
+                                pInputText
+                                type="text"
+                                inputmode="numeric"
+                                maxlength="6"
+                                placeholder="000000"
+                                class="w-full md:w-120 mb-4 text-center"
+                                style="letter-spacing: 0.5rem"
+                                [(ngModel)]="codigoMfa"
+                                [ngModelOptions]="{ standalone: true }"
+                            />
+
+                            <p-button label="Verificar y continuar" styleClass="w-full mb-3" [loading]="verificandoMfa" (onClick)="onVerificarMfa()"></p-button>
+                            <span class="font-medium no-underline cursor-pointer text-primary" (click)="volverACredenciales()">Volver</span>
+                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -93,10 +118,19 @@ export class Login implements OnInit {
     private fb = inject(FormBuilder);
     private authService = inject(AuthService);
     private router = inject(Router);
+    private cdr = inject(ChangeDetectorRef);
 
     formGroup!: FormGroup;
     checked: boolean = false;
     submite: boolean = false;
+
+    paso: 'credenciales' | 'mfa' = 'credenciales';
+    mfaSetupRequerido = false;
+    mfaToken = '';
+    qrDataUrl: string | null = null;
+    secretoManual = '';
+    codigoMfa = '';
+    verificandoMfa = false;
 
     ngOnInit() {
         this.formGroup = this.fb.group({
@@ -116,11 +150,29 @@ export class Login implements OnInit {
                 next: (r) => {
                     if (r.error) {
                         this.notificacion.mostrarMensaje(0, r.mensaje);
+                        this.cdr.detectChanges();
                         return;
                     }
 
-                    this.authService.guardarToken(r.data.token, '');
-                    this.router.navigate(['/'])
+                    const data = r.data;
+                    if (data.mfaRequerido || data.mfaSetupRequerido) {
+                        this.mfaToken = data.mfaToken!;
+                        this.mfaSetupRequerido = !!data.mfaSetupRequerido;
+                        this.paso = 'mfa';
+                        this.qrDataUrl = null;
+                        this.cdr.detectChanges();
+                        if (this.mfaSetupRequerido && data.mfaOtpAuthUri) {
+                            this.secretoManual = data.mfaSecretoManual ?? '';
+                            QRCode.toDataURL(data.mfaOtpAuthUri).then((url) => {
+                                this.qrDataUrl = url;
+                                this.cdr.detectChanges();
+                            });
+                        }
+                        return;
+                    }
+
+                    this.authService.guardarToken(data.token!, data.refreshToken!);
+                    this.router.navigate(['/']);
                 },
                 error: (err) => {}
             });
@@ -130,5 +182,37 @@ export class Login implements OnInit {
                 this.submite = false;
             }, 9000);
         }
+    }
+
+    onVerificarMfa() {
+        if (!this.codigoMfa || this.codigoMfa.length !== 6) {
+            this.notificacion.mostrarMensaje(0, 'Ingrese el código de 6 dígitos.');
+            return;
+        }
+        this.verificandoMfa = true;
+        this.authService.verificarMfa({ mfaToken: this.mfaToken, codigo: this.codigoMfa }).subscribe({
+            next: (r) => {
+                this.verificandoMfa = false;
+                if (r.error) {
+                    this.notificacion.mostrarMensaje(0, r.mensaje);
+                    this.cdr.detectChanges();
+                    return;
+                }
+                this.authService.guardarToken(r.data.token!, r.data.refreshToken!);
+                this.router.navigate(['/']);
+            },
+            error: () => {
+                this.verificandoMfa = false;
+                this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al verificar el código.');
+                this.cdr.detectChanges();
+            }
+        });
+    }
+
+    volverACredenciales() {
+        this.paso = 'credenciales';
+        this.codigoMfa = '';
+        this.qrDataUrl = null;
+        this.mfaToken = '';
     }
 }

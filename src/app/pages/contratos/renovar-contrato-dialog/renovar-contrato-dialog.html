@@ -1,0 +1,28 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickRenovar()">
+    <p class="text-surface-500 text-sm -mt-2">
+        El contrato de <strong>{{ contrato.numeroUnidad }} — {{ contrato.nombreInquilino }}</strong> quedará como RENOVADO
+        y se creará uno nuevo VIGENTE que continúa desde el {{ contrato.fechaFin }}.
+    </p>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-datepicker id="on_nuevaFechaFin" formControlName="nuevaFechaFin" dateFormat="dd/mm/yy" [showIcon]="true" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['nuevaFechaFin'].errors }" appendTo="body" />
+            <label for="on_nuevaFechaFin">Nueva fecha de fin</label>
+        </p-floatlabel>
+        @if (submite && f['nuevaFechaFin'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Seleccione la nueva fecha de fin.</span></div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-inputnumber id="on_nuevoMontoAlquiler" formControlName="nuevoMontoAlquiler" mode="currency" currency="PEN" locale="es-PE" class="w-full" inputStyleClass="w-full" />
+            <label for="on_nuevoMontoAlquiler">Nuevo monto de alquiler (opcional)</label>
+        </p-floatlabel>
+        <span class="text-surface-500 text-xs ml-2">Si se deja vacío, se mantiene el monto actual: S/ {{ contrato.montoAlquiler | number: '1.2-2' }}</span>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Renovar Contrato" icon="pi pi-sync" type="submit" [loading]="guardando" />
+    </div>
+</form>

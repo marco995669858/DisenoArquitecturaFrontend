@@ -6,12 +6,16 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '@/app/layout/service/layout.service';
 import { MenuModule } from 'primeng/menu';
+import { DialogService } from 'primeng/dynamicdialog';
 import { AuthService } from '@/app/core/services/auth-service';
+import { CambiarMiPasswordDialog } from '@/app/shared/cambiar-mi-password/cambiar-mi-password-dialog';
+import { SeguridadMfaDialog } from '@/app/shared/seguridad-mfa/seguridad-mfa-dialog';
+import { NotificacionesBell } from '@/app/shared/notificaciones/notificaciones-bell';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, MenuModule],
+    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, MenuModule, NotificacionesBell],
     template: ` <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
@@ -35,7 +39,7 @@ import { AuthService } from '@/app/core/services/auth-service';
                         />
                     </g>
                 </svg>
-                <span>SAKAI</span>
+                <span>DATAVERSE RENTALS</span>
             </a>
         </div>
 
@@ -58,6 +62,7 @@ import { AuthService } from '@/app/core/services/auth-service';
                     </button>
                     <app-configurator />
                 </div>
+                <app-notificaciones-bell />
             </div>
 
             <button class="layout-topbar-menu-button layout-topbar-action" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
@@ -68,7 +73,7 @@ import { AuthService } from '@/app/core/services/auth-service';
                 <div class="layout-topbar-menu-content">
                     <button type="button" class="layout-topbar-action" (click)="menuPerfil.toggle($event)">
                         <i class="pi pi-user"></i>
-                        <span>Profile</span>
+                        <span>Perfil</span>
                     </button>
                     <p-menu #menuPerfil [model]="items" [popup]="true"></p-menu>
                 </div>
@@ -80,8 +85,41 @@ export class AppTopbar {
 
     layoutService = inject(LayoutService);
     private authService = inject(AuthService);
+    private dialogService = inject(DialogService);
 
     items: MenuItem[] = [
+        {
+            icon: 'pi pi-key',
+            label: 'Cambiar mi contraseña',
+            command: () => {
+                this.dialogService.open(CambiarMiPasswordDialog, {
+                    header: 'CAMBIAR MI CONTRASEÑA',
+                    width: '420px',
+                    baseZIndex: 10000,
+                    closable: true,
+                    focusOnShow: true,
+                    draggable: true,
+                    keepInViewport: true,
+                    closeOnEscape: false
+                });
+            }
+        },
+        {
+            icon: 'pi pi-shield',
+            label: 'Seguridad (MFA)',
+            command: () => {
+                this.dialogService.open(SeguridadMfaDialog, {
+                    header: 'VERIFICACIÓN EN DOS PASOS',
+                    width: '420px',
+                    baseZIndex: 10000,
+                    closable: true,
+                    focusOnShow: true,
+                    draggable: true,
+                    keepInViewport: true,
+                    closeOnEscape: false
+                });
+            }
+        },
         {
             icon: 'pi pi-power-off',
             label: 'Cerrar sesión',

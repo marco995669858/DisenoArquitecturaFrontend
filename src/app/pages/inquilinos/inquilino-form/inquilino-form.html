@@ -1,0 +1,64 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_nombreCompleto" autocomplete="off" formControlName="nombreCompleto" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['nombreCompleto'].errors }" />
+            <label for="on_nombreCompleto">Nombre completo</label>
+        </p-floatlabel>
+        @if (submite && f['nombreCompleto'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['nombreCompleto'].errors['required']) { <span>Ingrese el nombre completo.</span> }
+        </div>
+        }
+    </div>
+
+    <div class="flex gap-3 w-full">
+        <div class="flex flex-col gap-1" style="width: 40%">
+            <p-floatlabel variant="on">
+                <p-select id="on_tipoDocumento" [options]="tiposDocumento" optionLabel="label" optionValue="value" formControlName="tipoDocumento" class="w-full" appendTo="body" />
+                <label for="on_tipoDocumento">Tipo doc.</label>
+            </p-floatlabel>
+        </div>
+        <div class="flex flex-col gap-1" style="width: 60%">
+            <p-floatlabel variant="on">
+                <input pInputText id="on_numeroDocumento" autocomplete="off" formControlName="numeroDocumento" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['numeroDocumento'].errors }" />
+                <label for="on_numeroDocumento">Número de documento</label>
+            </p-floatlabel>
+        </div>
+    </div>
+    @if (submite && f['numeroDocumento'].errors) {
+    <div class="text-red-500 text-sm -mt-4 ml-2">
+        @if (f['numeroDocumento'].errors['required']) { <span>Ingrese el número de documento.</span> }
+    </div>
+    }
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_telefono" autocomplete="off" formControlName="telefono" class="w-full" />
+            <label for="on_telefono">Teléfono</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_email" autocomplete="off" formControlName="email" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['email'].errors }" />
+            <label for="on_email">Email</label>
+        </p-floatlabel>
+        @if (submite && f['email'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['email'].errors['email']) { <span>Ingrese un email válido.</span> }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_direccion" autocomplete="off" formControlName="direccion" class="w-full" />
+            <label for="on_direccion">Dirección</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

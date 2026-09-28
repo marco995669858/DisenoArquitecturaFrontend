@@ -1,0 +1,66 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-inputnumber id="on_piso" formControlName="piso" [min]="1" [max]="10" [useGrouping]="false" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['piso'].errors }" />
+            <label for="on_piso">Piso</label>
+        </p-floatlabel>
+        @if (submite && f['piso'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['piso'].errors['required']) { <span>Ingrese el piso.</span> }
+            @if (f['piso'].errors['min'] || f['piso'].errors['max']) { <span>El piso debe estar entre 1 y 10.</span> }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_numeroUnidad" autocomplete="off" formControlName="numeroUnidad" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['numeroUnidad'].errors }" />
+            <label for="on_numeroUnidad">Número de unidad</label>
+        </p-floatlabel>
+        @if (submite && f['numeroUnidad'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['numeroUnidad'].errors['required']) { <span>Ingrese el número de unidad.</span> }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-inputnumber id="on_areaM2" formControlName="areaM2" [min]="40" [minFractionDigits]="2" [maxFractionDigits]="2" suffix=" m²" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['areaM2'].errors }" />
+            <label for="on_areaM2">Área</label>
+        </p-floatlabel>
+        <span class="text-sm text-surface-500 ml-2 mt-1">Mínimo 40 m² (área techada mínima para un departamento de un dormitorio, según el RNE).</span>
+        @if (submite && f['areaM2'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['areaM2'].errors['required']) { <span>Ingrese el área.</span> }
+            @if (f['areaM2'].errors['min']) { <span>El área mínima permitida es 40 m².</span> }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <textarea pTextarea [autoResize]="true" rows="2" id="on_caracteristicas" autocomplete="off" formControlName="caracteristicas" class="w-full"></textarea>
+            <label for="on_caracteristicas">Características</label>
+        </p-floatlabel>
+    </div>
+
+    @if (f['estado'].value === 'OCUPADO') {
+    <div class="flex flex-col gap-1 w-full">
+        <span class="text-sm text-surface-500 ml-2">Esta unidad está <b>Ocupado</b> porque tiene un contrato vigente. Ese estado lo controla el sistema; para liberarla, hay que finalizar o eliminar el contrato desde Contratos.</span>
+    </div>
+    } @else {
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_estado" [options]="estados" optionLabel="label" optionValue="value" formControlName="estado" class="w-full" appendTo="body" />
+            <label for="on_estado">Estado</label>
+        </p-floatlabel>
+        <span class="text-sm text-surface-500 ml-2 mt-1">"Ocupado" no se elige aquí: se activa solo cuando la unidad tiene un contrato vigente.</span>
+    </div>
+    }
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

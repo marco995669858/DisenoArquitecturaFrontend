@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">ESTADO DE PERIODOS DE FACTURACIÓN</div>
+    <p-toolbar class="mb-6">
+        <ng-template #start></ng-template>
+        <ng-template #end>
+            @if (permisosService.puedeEscribir('PERIODOS')) {
+            <p-button label="Agregar Periodo" icon="pi pi-plus" (onClick)="openModal()" />
+            }
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt1 [value]="periodos" dataKey="idPeriodo" [rows]="10" [rowHover]="true" [showGridlines]="true"
+        [paginator]="true" [globalFilterFields]="['periodo']" [rowsPerPageOptions]="[10, 25, 50]" responsiveLayout="scroll"
+        [sortField]="'periodo'" [sortOrder]="-1">
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Limpiar" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                    <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar periodo" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 5rem">N°</th>
+                <th style="min-width: 10rem">Periodo</th>
+                <th style="min-width: 10rem">Estado</th>
+                <th style="min-width: 8rem">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-periodo let-i="rowIndex">
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td class="font-semibold">{{ periodo.periodo }}</td>
+                <td><p-tag [value]="periodo.estado" [severity]="severidadEstado(periodo.estado)" /></td>
+                <td>
+                    @if (permisosService.puedeEscribir('PERIODOS')) {
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="openModal(periodo)" />
+                    }
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr><td colspan="4">Todavía no hay periodos registrados.</td></tr>
+        </ng-template>
+    </p-table>
+</div>

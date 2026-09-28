@@ -1,0 +1,28 @@
+<button type="button" class="layout-topbar-action" (click)="toggle($event)" pTooltip="Notificaciones" tooltipPosition="bottom">
+    @if (notificaciones.length > 0) {
+    <p-overlaybadge [value]="notificaciones.length.toString()" severity="danger">
+        <i class="pi pi-bell"></i>
+    </p-overlaybadge>
+    } @else {
+    <i class="pi pi-bell"></i>
+    }
+</button>
+
+<p-popover #panel [style]="{ width: '360px' }">
+    <div class="flex flex-col gap-2">
+        <div class="font-semibold text-lg mb-1">Notificaciones</div>
+
+        @if (cargando) {
+        <div class="text-muted-color text-sm py-2">Cargando...</div>
+        } @else if (notificaciones.length === 0) {
+        <div class="text-muted-color text-sm py-2">No hay notificaciones pendientes.</div>
+        } @else {
+        @for (n of notificaciones; track n.texto) {
+        <div class="flex items-start gap-2 py-2 border-b border-surface-200 dark:border-surface-700 last:border-0 cursor-pointer" (click)="onClickNotificacion(n)">
+            <i [class]="n.icono" [ngClass]="n.color" class="mt-1"></i>
+            <span class="text-sm">{{ n.texto }}</span>
+        </div>
+        }
+        }
+    </div>
+</p-popover>

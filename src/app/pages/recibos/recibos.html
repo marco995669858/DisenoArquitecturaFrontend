@@ -1,0 +1,54 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">RECIBOS DE SERVICIO</div>
+    <p-toolbar class="mb-6">
+        <ng-template #start></ng-template>
+        <ng-template #end>
+            @if (permisosService.puedeEscribir('RECIBOS')) {
+            <p-button label="Agregar Recibo" icon="pi pi-plus" (onClick)="openModal()" />
+            }
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt1 [value]="recibos" dataKey="idRecibo" [rows]="10" [rowHover]="true" [showGridlines]="true"
+        [paginator]="true" [globalFilterFields]="['periodo', 'tipoServicio']" [rowsPerPageOptions]="[10, 25, 50]" responsiveLayout="scroll"
+        [sortField]="'periodo'" [sortOrder]="-1">
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Limpiar" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                    <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar recibos" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 5rem">N°</th>
+                <th style="min-width: 8rem">Periodo</th>
+                <th style="min-width: 8rem">Servicio</th>
+                <th style="min-width: 8rem">Monto total</th>
+                <th style="min-width: 8rem">Emisión</th>
+                <th style="min-width: 8rem">Vencimiento</th>
+                <th style="min-width: 10rem">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-recibo let-i="rowIndex">
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td class="font-semibold">{{ recibo.periodo }}</td>
+                <td><p-tag [value]="recibo.tipoServicio" [severity]="recibo.tipoServicio === 'LUZ' ? 'warn' : 'info'" /></td>
+                <td>{{ recibo.montoTotal | currency: 'PEN' }}</td>
+                <td>{{ recibo.fechaEmision | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ recibo.fechaVencimiento | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                    @if (permisosService.puedeEscribir('RECIBOS')) {
+                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="openModal(recibo)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="onClicAbrirDialogoEliminar(recibo.idRecibo)" />
+                    }
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr><td colspan="7">No existen recibos registrados.</td></tr>
+        </ng-template>
+    </p-table>
+</div>

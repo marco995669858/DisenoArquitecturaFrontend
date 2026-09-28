@@ -1,0 +1,56 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_idUnidad" [options]="unidades" optionLabel="label" optionValue="value" [filter]="true" formControlName="idUnidad" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['idUnidad'].errors }" appendTo="body" />
+            <label for="on_idUnidad">Unidad</label>
+        </p-floatlabel>
+        @if (submite && f['idUnidad'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Seleccione una unidad.</span></div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_idInquilino" [options]="inquilinos" optionLabel="label" optionValue="value" [filter]="true" formControlName="idInquilino" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['idInquilino'].errors }" appendTo="body" />
+            <label for="on_idInquilino">Inquilino</label>
+        </p-floatlabel>
+        @if (submite && f['idInquilino'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Seleccione un inquilino.</span></div>
+        }
+    </div>
+
+    <div class="flex gap-3 w-full">
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-datepicker id="on_fechaInicio" formControlName="fechaInicio" dateFormat="dd/mm/yy" [showIcon]="true" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['fechaInicio'].errors }" appendTo="body" />
+                <label for="on_fechaInicio">Fecha de inicio</label>
+            </p-floatlabel>
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-datepicker id="on_fechaFin" formControlName="fechaFin" dateFormat="dd/mm/yy" [showIcon]="true" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['fechaFin'].errors }" appendTo="body" />
+                <label for="on_fechaFin">Fecha de fin</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div class="flex gap-3 w-full">
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-inputnumber id="on_montoAlquiler" formControlName="montoAlquiler" mode="currency" currency="PEN" locale="es-PE" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['montoAlquiler'].errors }" />
+                <label for="on_montoAlquiler">Monto de alquiler</label>
+            </p-floatlabel>
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-select id="on_estado" [options]="estados" optionLabel="label" optionValue="value" formControlName="estado" class="w-full" appendTo="body" />
+                <label for="on_estado">Estado</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

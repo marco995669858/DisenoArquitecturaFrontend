@@ -1,17 +1,19 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../../environments/environment.development';
 import { UsuarioDecodificado } from '../models/UsuarioDecodificado';
-import { LoginRequest, Token } from '../models/login';
+import { LoginRequest, Token, VerificarMfaRequest } from '../models/login';
 import { ApiResponse } from '../models/apiResponse';
+import { PermisosService } from './permisos-service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     private apiUrl = `${environment.URL_BACKEND}auth`;
+    private permisosService = inject(PermisosService);
 
     // SIGNAL PRIVADO: Guarda el usuario actual. Inicia en null.
     private usuarioSignal = signal<UsuarioDecodificado | null>(null);
@@ -32,19 +34,26 @@ export class AuthService {
         return this.http.post<ApiResponse<Token>>(`${this.apiUrl}/login`, credenciales);
     }
 
+    /** Segundo paso del login cuando login() devolvió mfaRequerido o mfaSetupRequerido. */
+    verificarMfa(args: VerificarMfaRequest) {
+        return this.http.post<ApiResponse<Token>>(`${this.apiUrl}/mfa/verificar`, args);
+    }
+
     // 2. Método para guardar el token y actualizar el Signal
     guardarToken(token: string, refreshToken: string) {
         localStorage.setItem('auth_token', token);
         localStorage.setItem('refresh_token', refreshToken);
         const decodificado = jwtDecode<UsuarioDecodificado>(token);
         this.usuarioSignal.set(decodificado);
+        this.permisosService.precargar();
     }
 
     // 3. Método para cerrar sesión de forma segura
     logout() {
-        localStorage.removeItem('access_token');
+        localStorage.removeItem('auth_token');
         localStorage.removeItem('refresh_token');
         this.usuarioSignal.set(null);
+        this.permisosService.limpiar();
         this.router.navigate(['/auth/login']);
     }
 
@@ -62,6 +71,7 @@ export class AuthService {
                 // Validamos si el token no ha expirado (exp está en segundos, Date en ms)
                 if (decodificado.exp * 1000 > Date.now()) {
                     this.usuarioSignal.set(decodificado);
+                    this.permisosService.precargar();
                 } else {
                     this.logout(); // Token expirado
                 }

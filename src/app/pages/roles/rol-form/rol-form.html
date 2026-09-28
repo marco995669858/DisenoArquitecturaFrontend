@@ -1,0 +1,39 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_nombre" autocomplete="off" formControlName="nombre" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['nombre'].errors }" />
+            <label for="on_nombre">Nombre del rol</label>
+        </p-floatlabel>
+        @if (submite && f['nombre'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1">
+            @if (f['nombre'].errors['required']) { <span>Ingrese el nombre del rol.</span> }
+            @if (f['nombre'].errors['minlength']) { <span>Debe tener mínimo 3 caracteres.</span> }
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-2 w-full">
+        <label class="font-semibold">Módulos a los que tiene acceso</label>
+        <p class="text-surface-500 text-sm -mt-1">
+            El Dashboard siempre es visible para cualquier usuario. Para el resto, marque el módulo y elija si este rol solo puede consultarlo (por ejemplo, para una auditoría externa) o también crear, editar y eliminar en él.
+        </p>
+        <div class="flex flex-col gap-3">
+            @for (modulo of modulos; track modulo.codigo) {
+            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-surface-200 dark:border-surface-700 pb-2">
+                <div class="flex items-center gap-2">
+                    <p-checkbox [inputId]="'modulo_' + modulo.codigo" [binary]="true" [ngModel]="estaMarcado(modulo.codigo)" [ngModelOptions]="{ standalone: true }" (onChange)="onCambioPermiso(modulo.codigo, $event.checked)" />
+                    <label [for]="'modulo_' + modulo.codigo">{{ modulo.nombre }}</label>
+                </div>
+                @if (estaMarcado(modulo.codigo)) {
+                <p-selectbutton [options]="opcionesNivel" optionLabel="label" optionValue="value" [ngModel]="nivelDe(modulo.codigo)" [ngModelOptions]="{ standalone: true }" (onChange)="onCambioNivel(modulo.codigo, $event.value)" [allowEmpty]="false" />
+                }
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

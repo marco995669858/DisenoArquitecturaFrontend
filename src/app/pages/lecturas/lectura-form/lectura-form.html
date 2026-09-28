@@ -1,0 +1,55 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_idMedidor" [options]="medidores" optionLabel="label" optionValue="value" [filter]="true" formControlName="idMedidor" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['idMedidor'].errors }" appendTo="body" />
+            <label for="on_idMedidor">Medidor</label>
+        </p-floatlabel>
+        @if (submite && f['idMedidor'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Seleccione un medidor.</span></div>
+        }
+    </div>
+
+    <div class="flex gap-3 w-full">
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <input pInputText id="on_periodo" autocomplete="off" formControlName="periodo" placeholder="2026-09" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && (f['periodo'].errors || formGroup.errors?.['mesNoCoincide']) }" />
+                <label for="on_periodo">Periodo (AAAA-MM)</label>
+            </p-floatlabel>
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-datepicker id="on_fechaLectura" formControlName="fechaLectura" dateFormat="dd/mm/yy" [showIcon]="true" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && formGroup.errors?.['mesNoCoincide'] }" appendTo="body" />
+                <label for="on_fechaLectura">Fecha de lectura</label>
+            </p-floatlabel>
+        </div>
+    </div>
+    @if (submite && f['periodo'].errors) {
+    <div class="text-red-500 text-sm -mt-4 ml-2"><span>Ingrese el periodo con formato AAAA-MM.</span></div>
+    }
+    @if (submite && !f['periodo'].errors && formGroup.errors?.['mesNoCoincide']) {
+    <div class="text-red-500 text-sm -mt-4 ml-2"><span>La fecha de lectura debe caer dentro del mes del periodo indicado.</span></div>
+    }
+
+    <div class="flex gap-3 w-full">
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-inputnumber id="on_lecturaAnterior" formControlName="lecturaAnterior" [minFractionDigits]="2" [maxFractionDigits]="2" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['lecturaAnterior'].errors }" />
+                <label for="on_lecturaAnterior">Lectura anterior</label>
+            </p-floatlabel>
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-inputnumber id="on_lecturaActual" formControlName="lecturaActual" [minFractionDigits]="2" [maxFractionDigits]="2" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['lecturaActual'].errors }" />
+                <label for="on_lecturaActual">Lectura actual</label>
+            </p-floatlabel>
+        </div>
+    </div>
+    @if (submite && (f['lecturaAnterior'].errors || f['lecturaActual'].errors)) {
+    <div class="text-red-500 text-sm -mt-4 ml-2"><span>Ingrese ambas lecturas (la actual debe ser mayor o igual a la anterior).</span></div>
+    }
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

@@ -1,0 +1,52 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_idLiquidacion" [options]="liquidaciones" optionLabel="label" optionValue="value" [filter]="true" formControlName="idLiquidacion" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['idLiquidacion'].errors }" appendTo="body" />
+            <label for="on_idLiquidacion">Liquidación</label>
+        </p-floatlabel>
+        @if (submite && f['idLiquidacion'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Seleccione una liquidación.</span></div>
+        }
+    </div>
+
+    <div class="flex gap-3 w-full">
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-datepicker id="on_fechaPago" formControlName="fechaPago" dateFormat="dd/mm/yy" [showIcon]="true" class="w-full" appendTo="body" />
+                <label for="on_fechaPago">Fecha de pago</label>
+            </p-floatlabel>
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-inputnumber id="on_montoPagado" formControlName="montoPagado" mode="currency" currency="PEN" locale="es-PE" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['montoPagado'].errors }" />
+                <label for="on_montoPagado">Monto pagado</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_metodoPago" [options]="metodos" optionLabel="label" optionValue="value" formControlName="metodoPago" class="w-full" appendTo="body" />
+            <label for="on_metodoPago">Método de pago</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_numeroVoucher" autocomplete="off" formControlName="numeroVoucher" class="w-full" />
+            <label for="on_numeroVoucher">N° de voucher</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_rutaEvidencia" autocomplete="off" formControlName="rutaEvidencia" class="w-full" />
+            <label for="on_rutaEvidencia">Referencia de evidencia</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

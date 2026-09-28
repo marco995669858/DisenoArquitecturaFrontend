@@ -1,0 +1,115 @@
+<div class="grid grid-cols-12 gap-8">
+    <div class="col-span-12 flex justify-end">
+        <p-button label="Exportar PDF" icon="pi pi-file-pdf" severity="secondary" [outlined]="true" (onClick)="exportarPdf()" />
+    </div>
+    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+        <div class="card mb-0">
+            <div class="flex justify-between mb-4">
+                <div>
+                    <span class="block text-muted-color font-medium mb-4">Ingresos del mes</span>
+                    <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">S/ {{ ingresosDelMes() | number: '1.2-2' }}</div>
+                </div>
+                <div class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                    <i class="pi pi-wallet text-green-500 text-xl!"></i>
+                </div>
+            </div>
+            <span class="text-muted-color">liquidaciones pagadas &middot; periodo {{ periodo }}</span>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+        <div class="card mb-0">
+            <div class="flex justify-between mb-4">
+                <div>
+                    <span class="block text-muted-color font-medium mb-4">Egresos del mes</span>
+                    <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">S/ {{ egresosDelMes() | number: '1.2-2' }}</div>
+                </div>
+                <div class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                    <i class="pi pi-wrench text-orange-500 text-xl!"></i>
+                </div>
+            </div>
+            <span class="text-muted-color">gastos de mantenimiento &middot; periodo {{ periodo }}</span>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+        <div class="card mb-0">
+            <div class="flex justify-between mb-4">
+                <div>
+                    <span class="block text-muted-color font-medium mb-4">Morosidad</span>
+                    <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">S/ {{ morosidad() | number: '1.2-2' }}</div>
+                </div>
+                <div class="flex items-center justify-center bg-red-100 dark:bg-red-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                    <i class="pi pi-exclamation-triangle text-red-500 text-xl!"></i>
+                </div>
+            </div>
+            <span class="text-muted-color">liquidaciones pendientes o vencidas</span>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+        <div class="card mb-0">
+            <div class="flex justify-between mb-4">
+                <div>
+                    <span class="block text-muted-color font-medium mb-4">Resultado neto</span>
+                    <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">S/ {{ resultadoNeto() | number: '1.2-2' }}</div>
+                </div>
+                <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                    <i class="pi pi-chart-line text-blue-500 text-xl!"></i>
+                </div>
+            </div>
+            <span class="text-muted-color">ingresos &minus; egresos del periodo</span>
+        </div>
+    </div>
+
+    <div class="col-span-12 xl:col-span-4">
+        <div class="card">
+            <div class="font-semibold text-xl mb-4">Unidades por estado</div>
+            @if (dataUnidadesPorEstado()) {
+            <p-chart type="pie" [data]="dataUnidadesPorEstado()" [options]="chartOptions" [style]="{ height: '280px' }" />
+            }
+        </div>
+    </div>
+
+    <div class="col-span-12 xl:col-span-8">
+        <div class="card">
+            <div class="font-semibold text-xl mb-4">Ingresos vs egresos por periodo</div>
+            @if (dataIngresosEgresos()) {
+            <p-chart type="bar" [data]="dataIngresosEgresos()" [options]="chartOptions" [style]="{ height: '280px' }" />
+            }
+        </div>
+    </div>
+
+    <div class="col-span-12 xl:col-span-6">
+        <div class="card">
+            <div class="font-semibold text-xl mb-4">Contratos por vencer</div>
+            <p class="text-muted-color mb-4">Vigencia dentro de los próximos 30 días</p>
+            @for (contrato of contratosPorVencer(); track contrato.idContrato) {
+            <div class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700 last:border-0">
+                <div>
+                    <div class="font-medium">{{ contrato.numeroUnidad }} &mdash; {{ contrato.nombreInquilino }}</div>
+                    <div class="text-muted-color text-sm">Vence el {{ contrato.fechaFin }}</div>
+                </div>
+                <span class="text-orange-500 font-medium">{{ contrato.diasRestantes }} días</span>
+            </div>
+            } @empty {
+            <div class="text-muted-color">No hay contratos por vencer en los próximos 30 días.</div>
+            }
+        </div>
+    </div>
+
+    <div class="col-span-12 xl:col-span-6">
+        <div class="card">
+            <div class="font-semibold text-xl mb-4">Liquidaciones pendientes</div>
+            <p class="text-muted-color mb-4">No pagadas, todos los periodos</p>
+            @for (liq of liquidacionesPendientes(); track liq.idLiquidacion) {
+            <div class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700 last:border-0">
+                <div>
+                    <div class="font-medium">{{ liq.numeroUnidad }} &middot; {{ liq.periodo }}</div>
+                    <div class="text-muted-color text-sm">{{ liq.nombreInquilino }}</div>
+                </div>
+                <span class="font-medium" [class.text-red-500]="liq.estado === 'VENCIDO'">S/ {{ liq.montoTotal | number: '1.2-2' }}</span>
+            </div>
+            } @empty {
+            <div class="text-muted-color">No hay liquidaciones pendientes.</div>
+            }
+        </div>
+    </div>
+</div>

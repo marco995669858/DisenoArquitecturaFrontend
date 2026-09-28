@@ -1,0 +1,33 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_clave" autocomplete="off" formControlName="clave" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['clave'].errors }" />
+            <label for="on_clave">Clave (p. ej. DIAS_ALERTA_VENCIMIENTO)</label>
+        </p-floatlabel>
+        @if (submite && f['clave'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Ingrese la clave del parámetro.</span></div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_valor" autocomplete="off" formControlName="valor" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['valor'].errors }" />
+            <label for="on_valor">Valor</label>
+        </p-floatlabel>
+        @if (submite && f['valor'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Ingrese el valor del parámetro.</span></div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <textarea pTextarea [autoResize]="true" rows="2" id="on_descripcion" autocomplete="off" formControlName="descripcion" class="w-full"></textarea>
+            <label for="on_descripcion">Descripción</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

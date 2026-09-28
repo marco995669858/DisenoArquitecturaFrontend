@@ -1,0 +1,16 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGenerar()">
+    <p class="text-surface-500 text-sm -mt-2">
+        Emite la liquidación de alquiler, luz, agua y mantenimiento imputable para cada unidad con contrato vigente en el periodo indicado.
+    </p>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_periodo" autocomplete="off" formControlName="periodo" placeholder="2026-09" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['periodo'].errors }" />
+            <label for="on_periodo">Periodo a liquidar (AAAA-MM)</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Generar Liquidaciones" icon="pi pi-receipt" type="submit" [loading]="generando" />
+    </div>
+</form>

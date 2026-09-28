@@ -1,0 +1,81 @@
+<form class="card flex flex-col gap-6 w-full" [formGroup]="formGroup" (ngSubmit)="onClickGuardar()">
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <p-select id="on_idUnidad" [options]="unidades" optionLabel="label" optionValue="value" [filter]="true" formControlName="idUnidad" class="w-full" appendTo="body" />
+            <label for="on_idUnidad">Unidad</label>
+        </p-floatlabel>
+    </div>
+
+    @if (!f['idUnidad'].value) {
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_ubicacion" autocomplete="off" formControlName="ubicacion" class="w-full" />
+            <label for="on_ubicacion">Ubicación (p. ej. pasillo piso 2, azotea)</label>
+        </p-floatlabel>
+    </div>
+    }
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <textarea pTextarea [autoResize]="true" rows="2" id="on_descripcion" autocomplete="off" formControlName="descripcion" class="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['descripcion'].errors }"></textarea>
+            <label for="on_descripcion">Descripción</label>
+        </p-floatlabel>
+        @if (submite && f['descripcion'].errors) {
+        <div class="text-red-500 text-sm ml-2 mt-1"><span>Ingrese la descripción del trabajo.</span></div>
+        }
+    </div>
+
+    <div class="flex gap-3 w-full">
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-datepicker id="on_fechaMantenimiento" formControlName="fechaMantenimiento" dateFormat="dd/mm/yy" [showIcon]="true" class="w-full" appendTo="body" />
+                <label for="on_fechaMantenimiento">Fecha</label>
+            </p-floatlabel>
+        </div>
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-select id="on_tipoGasto" [options]="tipos" optionLabel="label" optionValue="value" formControlName="tipoGasto" class="w-full" appendTo="body" />
+                <label for="on_tipoGasto">Tipo de gasto</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-1 w-full">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_proveedor" autocomplete="off" formControlName="proveedor" class="w-full" />
+            <label for="on_proveedor">Proveedor</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="flex gap-3 w-full">
+        @if (muestraMateriales) {
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-inputnumber id="on_montoMateriales" formControlName="montoMateriales" mode="currency" currency="PEN" locale="es-PE" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['montoMateriales'].errors }" />
+                <label for="on_montoMateriales">Monto materiales</label>
+            </p-floatlabel>
+        </div>
+        }
+        @if (muestraManoObra) {
+        <div class="flex flex-col gap-1 w-full">
+            <p-floatlabel variant="on">
+                <p-inputnumber id="on_montoManoObra" formControlName="montoManoObra" mode="currency" currency="PEN" locale="es-PE" class="w-full" inputStyleClass="w-full" [ngClass]="{ 'ng-dirty ng-invalid': submite && f['montoManoObra'].errors }" />
+                <label for="on_montoManoObra">Monto mano de obra</label>
+            </p-floatlabel>
+        </div>
+        }
+    </div>
+    @if (submite && ((muestraMateriales && f['montoMateriales'].errors) || (muestraManoObra && f['montoManoObra'].errors))) {
+    <div class="text-red-500 text-sm -mt-4 ml-2"><span>Ingrese un monto mayor a cero para cada concepto del tipo de gasto seleccionado.</span></div>
+    }
+
+    <div class="flex items-center gap-2">
+        <p-checkbox inputId="on_imputableInquilino" formControlName="imputableInquilino" [binary]="true" />
+        <label for="on_imputableInquilino">Imputable al inquilino (se cobra en su próxima liquidación)</label>
+    </div>
+
+    <div class="flex justify-center gap-3 mt-2">
+        <p-button label="Guardar" icon="pi pi-check" type="submit" />
+    </div>
+</form>

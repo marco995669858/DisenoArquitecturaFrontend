@@ -4,5 +4,16 @@ export interface LoginRequest{
 }
 
 export interface Token{
-    token:string
+    token?: string;
+    refreshToken?: string;
+    mfaRequerido?: boolean;
+    mfaSetupRequerido?: boolean;
+    mfaToken?: string;
+    mfaSecretoManual?: string;
+    mfaOtpAuthUri?: string;
+}
+
+export interface VerificarMfaRequest {
+    mfaToken?: string;
+    codigo?: string;
 }

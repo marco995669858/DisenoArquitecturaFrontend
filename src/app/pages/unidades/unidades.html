@@ -1,0 +1,54 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">UNIDADES</div>
+    <p-toolbar class="mb-6">
+        <ng-template #start></ng-template>
+        <ng-template #end>
+            @if (permisosService.puedeEscribir('UNIDADES')) {
+            <p-button label="Agregar Unidad" icon="pi pi-plus" (onClick)="openModal()" />
+            }
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt1 [value]="unidades" dataKey="idUnidad" [rows]="10" [rowHover]="true" [showGridlines]="true"
+        [paginator]="true" [globalFilterFields]="['numeroUnidad', 'caracteristicas', 'estado']" [rowsPerPageOptions]="[10, 25, 50]"
+        responsiveLayout="scroll">
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Limpiar" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                    <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar unidades" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 5rem">N°</th>
+                <th style="min-width: 6rem">Piso</th>
+                <th style="min-width: 8rem">Unidad</th>
+                <th style="min-width: 8rem">Área (m²)</th>
+                <th style="min-width: 14rem">Características</th>
+                <th style="min-width: 10rem">Estado</th>
+                <th style="min-width: 10rem">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-unidad let-i="rowIndex">
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ unidad.piso }}</td>
+                <td class="font-semibold">{{ unidad.numeroUnidad }}</td>
+                <td>{{ unidad.areaM2 }}</td>
+                <td>{{ unidad.caracteristicas }}</td>
+                <td><p-tag [value]="unidad.estado" [severity]="severidadEstado(unidad.estado)" /></td>
+                <td>
+                    @if (permisosService.puedeEscribir('UNIDADES')) {
+                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="openModal(unidad)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="onClicAbrirDialogoEliminar(unidad.idUnidad)" />
+                    }
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr><td colspan="7">No existen unidades registradas.</td></tr>
+        </ng-template>
+    </p-table>
+</div>

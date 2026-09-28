@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">HISTORIAL DE AUDITORÍA</div>
+    <p-toolbar class="mb-6">
+        <ng-template #start>
+            <span class="text-muted-color text-sm">Últimos {{ eventos.length }} eventos de creación, actualización y eliminación del sistema.</span>
+        </ng-template>
+        <ng-template #end>
+            <p-button label="Actualizar" icon="pi pi-refresh" severity="secondary" [outlined]="true" [loading]="cargando" (onClick)="listar()" />
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt1 [value]="eventos" [rows]="15" [rowHover]="true" [showGridlines]="true" [paginator]="true"
+        [globalFilterFields]="['accion', 'entidad', 'descripcion', 'nombreUsuario', 'ip']" [rowsPerPageOptions]="[15, 30, 50]"
+        [sortField]="'fecha'" [sortOrder]="-1" responsiveLayout="scroll">
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Limpiar" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                    <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar en el historial" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 10rem" pSortableColumn="fecha">Fecha <p-sortIcon field="fecha" /></th>
+                <th style="min-width: 8rem">Acción</th>
+                <th style="min-width: 10rem">Entidad</th>
+                <th style="min-width: 20rem">Descripción</th>
+                <th style="min-width: 10rem">Usuario</th>
+                <th style="min-width: 8rem">IP</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-evento>
+            <tr>
+                <td>{{ evento.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td><p-tag [value]="evento.accion" [severity]="severidadAccion(evento.accion)" /></td>
+                <td>{{ evento.entidad }}</td>
+                <td>{{ evento.descripcion }}</td>
+                <td>{{ evento.nombreUsuario }}</td>
+                <td>{{ evento.ip }}</td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr><td colspan="6">No hay eventos registrados.</td></tr>
+        </ng-template>
+    </p-table>
+</div>

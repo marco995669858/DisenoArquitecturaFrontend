@@ -1,6 +1,8 @@
-# Sakai19
+# Dataverse Rentals — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.
+Interfaz web del sistema de administración inmobiliaria Dataverse Rentals. Este
+proyecto se generó a partir de la plantilla Sakai (Angular CLI + PrimeNG), y
+sobre esa base se está construyendo el prototipo funcional.
 
 ## Development server
 

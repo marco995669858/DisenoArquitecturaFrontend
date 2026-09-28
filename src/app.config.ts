@@ -7,6 +7,7 @@ import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 import { authInterceptor } from './app/core/interceptors/auth-interceptor';
 import { DialogService } from 'primeng/dynamicdialog';
+import { PRIMENG_ES } from './app/core/constants/primeng-es';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -14,7 +15,7 @@ export const appConfig: ApplicationConfig = {
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
         provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
         provideZonelessChangeDetection(),
-        providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } }}),
+        providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } }, translation: PRIMENG_ES }),
         MessageService,
         DialogService
     ]

@@ -1,0 +1,55 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">PRORRATEO</div>
+    <p-toolbar class="mb-6">
+        <ng-template #start></ng-template>
+        <ng-template #end>
+            @if (permisosService.puedeEscribir('PRORRATEO')) {
+            <p-button label="Calcular Prorrateo" icon="pi pi-calculator" class="mr-2" severity="secondary" (onClick)="openCalcularModal()" />
+            <p-button label="Agregar Prorrateo" icon="pi pi-plus" (onClick)="openModal()" />
+            }
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt1 [value]="prorrateos" dataKey="idProrrateo" [rows]="10" [rowHover]="true" [showGridlines]="true"
+        [paginator]="true" [globalFilterFields]="['numeroUnidad', 'periodo', 'tipoServicio']" [rowsPerPageOptions]="[10, 25, 50]"
+        responsiveLayout="scroll">
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Limpiar" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                    <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar prorrateo" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 8rem">Periodo</th>
+                <th style="min-width: 8rem">Unidad</th>
+                <th style="min-width: 8rem">Servicio</th>
+                <th style="min-width: 10rem">Consumo propio</th>
+                <th style="min-width: 10rem">Común asignado</th>
+                <th style="min-width: 10rem">Monto</th>
+                <th style="min-width: 10rem">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-p>
+            <tr>
+                <td class="font-semibold">{{ p.periodo }}</td>
+                <td>{{ p.numeroUnidad }}</td>
+                <td><p-tag [value]="p.tipoServicio" [severity]="p.tipoServicio === 'LUZ' ? 'warn' : 'info'" /></td>
+                <td>{{ p.consumoIndividual }}</td>
+                <td>{{ p.consumoComunAsignado }}</td>
+                <td>S/ {{ p.montoCalculado | number: '1.2-2' }}</td>
+                <td>
+                    @if (permisosService.puedeEscribir('PRORRATEO')) {
+                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="openModal(p)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="onClicAbrirDialogoEliminar(p.idProrrateo)" />
+                    }
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr><td colspan="7">No existen registros de prorrateo.</td></tr>
+        </ng-template>
+    </p-table>
+</div>

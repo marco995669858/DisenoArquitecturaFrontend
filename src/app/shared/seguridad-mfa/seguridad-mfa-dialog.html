@@ -1,0 +1,47 @@
+<div class="flex flex-col gap-4 w-full">
+    @if (cargando) {
+    <div class="text-center text-muted-color py-4">Cargando...</div>
+    } @else {
+
+    <div class="flex items-center gap-3">
+        <span>Estado actual:</span>
+        @if (mfaHabilitado) {
+        <p-tag value="ACTIVA" severity="success" />
+        } @else {
+        <p-tag value="DESACTIVADA" severity="secondary" />
+        }
+    </div>
+
+    @if (!mfaHabilitado && !mostrandoActivacion) {
+    <p class="text-muted-color text-sm">La verificación en dos pasos agrega un código adicional al iniciar sesión, generado por una app como Google Authenticator.</p>
+    <p-button label="Activar verificación en dos pasos" icon="pi pi-shield" [loading]="procesando" (onClick)="onClickActivar()" />
+    }
+
+    @if (mostrandoActivacion) {
+    <p class="text-muted-color text-sm">Escanee este código con su app de autenticación y confirme con el código que genere.</p>
+    @if (qrDataUrl) {
+    <img [src]="qrDataUrl" alt="Código QR de verificación en dos pasos" class="mx-auto" style="width: 180px; height: 180px" />
+    }
+    <p class="text-muted-color text-sm text-center">Clave manual: <span class="font-mono font-medium">{{ secretoManual }}</span></p>
+    <input pInputText type="text" inputmode="numeric" maxlength="6" placeholder="000000" class="w-full text-center" style="letter-spacing: 0.5rem" [(ngModel)]="codigo" />
+    <div class="flex gap-2">
+        <p-button label="Confirmar" icon="pi pi-check" class="flex-1" [loading]="procesando" (onClick)="onClickConfirmarActivacion()" />
+        <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="cancelarPaso()" />
+    </div>
+    }
+
+    @if (mfaHabilitado && !mostrandoDesactivacion) {
+    <p class="text-muted-color text-sm">Puede desactivarla si no quiere seguir usando la verificación en dos pasos.</p>
+    <p-button label="Desactivar verificación en dos pasos" icon="pi pi-shield" severity="danger" [outlined]="true" (onClick)="onClickPedirDesactivar()" />
+    }
+
+    @if (mostrandoDesactivacion) {
+    <p class="text-muted-color text-sm">Ingrese el código actual de su app de autenticación para confirmar la desactivación.</p>
+    <input pInputText type="text" inputmode="numeric" maxlength="6" placeholder="000000" class="w-full text-center" style="letter-spacing: 0.5rem" [(ngModel)]="codigo" />
+    <div class="flex gap-2">
+        <p-button label="Confirmar y desactivar" icon="pi pi-check" severity="danger" class="flex-1" [loading]="procesando" (onClick)="onClickConfirmarDesactivacion()" />
+        <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="cancelarPaso()" />
+    </div>
+    }
+    }
+</div>

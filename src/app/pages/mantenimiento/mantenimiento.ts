@@ -1,0 +1,97 @@
+import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Table, TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TagModule } from 'primeng/tag';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputTextModule } from 'primeng/inputtext';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MantenimientoService } from '@/app/core/services/mantenimiento-service';
+import { NotificacionService } from '@/app/core/services/notificacion-service';
+import { PermisosService } from '@/app/core/services/permisos-service';
+import { MantenimientoDTO } from '@/app/core/models/mantenimiento';
+import { MantenimientoForm } from './mantenimiento-form/mantenimiento-form';
+
+@Component({
+    selector: 'app-mantenimiento',
+    templateUrl: './mantenimiento.html',
+    standalone: true,
+    imports: [CommonModule, TableModule, ButtonModule, ToolbarModule, TagModule, InputIconModule, IconFieldModule, InputTextModule]
+})
+export class Mantenimiento implements OnInit {
+    @ViewChild('filter') filter!: ElementRef;
+
+    private mantenimientoService = inject(MantenimientoService);
+    private notificacion = inject(NotificacionService);
+    private cdr = inject(ChangeDetectorRef);
+    private dialogService = inject(DialogService);
+    protected permisosService = inject(PermisosService);
+
+    mantenimientos: MantenimientoDTO[] = [];
+    modalRef: DynamicDialogRef | null = null;
+
+    ngOnInit() {
+        this.listar();
+    }
+
+    listar() {
+        this.mantenimientoService.listar().subscribe({
+            next: (respuesta) => {
+                if (respuesta.error) {
+                    return this.notificacion.mostrarMensaje(0, respuesta.mensaje);
+                }
+                this.mantenimientos = respuesta.data ?? [];
+                this.cdr.detectChanges();
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar el mantenimiento.')
+        });
+    }
+
+    onClicAbrirDialogoEliminar(idMantenimiento?: number) {
+        if (!idMantenimiento) return;
+        this.notificacion.mostrarDialog('¿Eliminar mantenimiento?', 'El registro dejará de aparecer en los listados.', 'warning', '#d33', '#3085d6', 'Sí', 'No').then((r) => {
+            if (r.isConfirmed) {
+                this.mantenimientoService.eliminar({ idMantenimiento }).subscribe({
+                    next: (respuesta) => {
+                        if (respuesta.error) {
+                            return this.notificacion.mostrarMensaje(0, respuesta.mensaje);
+                        }
+                        this.notificacion.mostrarMensaje(1, respuesta.mensaje);
+                        this.listar();
+                    },
+                    error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al eliminar el mantenimiento.')
+                });
+            }
+        });
+    }
+
+    openModal(data?: MantenimientoDTO) {
+        const titulo = !data ? 'NUEVO MANTENIMIENTO' : 'EDITAR MANTENIMIENTO';
+        this.modalRef = this.dialogService.open(MantenimientoForm, {
+            header: titulo,
+            width: '520px',
+            baseZIndex: 10000,
+            closable: true,
+            focusOnShow: true,
+            draggable: true,
+            keepInViewport: true,
+            closeOnEscape: false,
+            data
+        });
+
+        this.modalRef?.onClose.subscribe((r: any) => {
+            if (r) this.listar();
+        });
+    }
+
+    clear(table: Table) {
+        table.clear();
+        this.filter.nativeElement.value = '';
+    }
+
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+}
