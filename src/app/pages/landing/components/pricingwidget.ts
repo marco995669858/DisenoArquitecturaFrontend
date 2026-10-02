@@ -6,7 +6,7 @@ import { RippleModule } from 'primeng/ripple';
 
 /**
  * En el Sakai original esta seccion era de precios. Dataverse Rentals es un
- * prototipo interno para un solo cliente (Milano & Asociados), no un
+ * prototipo interno para un solo cliente (Flores & Asociados), no un
  * producto que se vende por planes, asi que se reutiliza el mismo layout de
  * 3 tarjetas para mostrar los roles de acceso en su lugar (RNF-01).
  */

@@ -21,7 +21,7 @@ import { Router, RouterModule } from '@angular/router';
                         <div class="col-span-12 md:col-span-4">
                             <h4 class="font-medium text-2xl leading-normal mb-6 text-surface-900 dark:text-surface-0">Cliente</h4>
                             <span class="leading-normal text-xl block mb-2 text-surface-700 dark:text-surface-100">Administradora Inmobiliaria</span>
-                            <span class="leading-normal text-xl block text-surface-700 dark:text-surface-100">Milano &amp; Asociados</span>
+                            <span class="leading-normal text-xl block text-surface-700 dark:text-surface-100">Flores &amp; Asociados</span>
                         </div>
 
                         <div class="col-span-12 md:col-span-4">

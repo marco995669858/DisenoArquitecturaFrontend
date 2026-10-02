@@ -128,7 +128,7 @@ import { CommonModule } from '@angular/common';
                     <div class="text-gray-900 mb-2 text-3xl font-semibold">Sobre el proyecto</div>
                     <p class="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-6" style="max-width: 800px">
                         Dataverse Rentals es el prototipo funcional desarrollado por la consultora Dataverse Corporation para la Administradora Inmobiliaria
-                        Milano &amp; Asociados, en el marco del curso Diseño y Arquitectura de Software.
+                        Flores &amp; Asociados, en el marco del curso Diseño y Arquitectura de Software.
                     </p>
                 </div>
             </div>

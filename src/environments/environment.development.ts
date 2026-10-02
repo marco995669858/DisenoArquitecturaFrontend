@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  URL_BACKEND: 'http://localhost:8080/dataverse/rentals/api/',
+  URL_BACKEND: 'https://fp72xvfm-8080.brs.devtunnels.ms/dataverse/rentals/api/',
 
 };
