@@ -56,8 +56,11 @@ export class UsuarioForm implements OnInit {
             this.formGroup.get('nombreUsuario')!.disable();
         }
 
-        this.rolService.listar().subscribe((r) => {
-            this.roles = (r.data ?? []).map((rol) => ({ label: rol.nombre!, value: rol.idRol! }));
+        this.rolService.listar().subscribe({
+            next: (r) => {
+                this.roles = (r.data ?? []).map((rol) => ({ label: rol.nombre!, value: rol.idRol! }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar los roles.')
         });
     }
 

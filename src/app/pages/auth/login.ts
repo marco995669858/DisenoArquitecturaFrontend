@@ -174,7 +174,11 @@ export class Login implements OnInit {
                     this.authService.guardarToken(data.token!, data.refreshToken!);
                     this.router.navigate(['/']);
                 },
-                error: (err) => {}
+                error: (err) => {
+                    const mensaje = err.status === 0 ? 'No se pudo conectar con el servidor. Verifique su conexión e intente nuevamente.' : 'Ocurrió un problema al iniciar sesión. Intente nuevamente.';
+                    this.notificacion.mostrarMensaje(0, mensaje);
+                    this.cdr.detectChanges();
+                }
             });
         } else {
             this.submite = true;

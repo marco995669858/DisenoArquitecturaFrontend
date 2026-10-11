@@ -17,13 +17,16 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
     const notificacionService = inject(NotificacionService);
 
     const token = authService.obtenerToken();
+    const esLlamadaDeAuth = req.url.includes('/auth/login') || req.url.includes('/auth/refresh') || req.url.includes('/auth/mfa/verificar');
 
     // Activamos el loading al iniciar la petición
     loadingService.show();
 
-    // 1. Clonar la petición y agregar el Token
+    // 1. Clonar la petición y agregar el Token (el refresh no lo necesita: va
+    // con el refresh token en el body, y pegarle el access token viejo/expirado
+    // solo puede causar un rechazo aparte sin relación con el refresh en si).
     let peticionClonada = req;
-    if (token) {
+    if (token && !esLlamadaDeAuth) {
         peticionClonada = inyectarToken(req, token);
     }
 
@@ -31,8 +34,11 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
         // Agregamos un delay opcional para evitar parpadeos en redes ultra rápidas
         // delay(400),
         catchError((error: HttpErrorResponse) => {
-            // Si el backend dice 401, el token expiró o es inválido
-            if ((error.status === 401 || error.status === 403) && !req.url.includes('/login')) {
+            // Solo un 401 significa "token expirado o invalido, intenta refrescar".
+            // Un 403 es un problema de permisos (rol sin acceso al modulo): refrescar
+            // el token no lo soluciona, y antes terminaba desconectando al usuario
+            // aunque su sesion siguiera siendo valida.
+            if (error.status === 401 && !esLlamadaDeAuth) {
                 return manejarError401(req, next, authService);
             }
             return throwError(() => error);

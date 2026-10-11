@@ -51,11 +51,14 @@ export class PagoForm implements OnInit {
             rutaEvidencia: [data?.rutaEvidencia ?? '']
         });
 
-        this.liquidacionService.listar().subscribe((r) => {
-            this.liquidaciones = (r.data ?? []).map((l) => ({
-                label: `${l.numeroUnidad} — ${l.nombreInquilino} — ${l.periodo} (S/ ${l.montoTotal?.toFixed(2)})`,
-                value: l.idLiquidacion!
-            }));
+        this.liquidacionService.listar().subscribe({
+            next: (r) => {
+                this.liquidaciones = (r.data ?? []).map((l) => ({
+                    label: `${l.numeroUnidad} — ${l.nombreInquilino} — ${l.periodo} (S/ ${l.montoTotal?.toFixed(2)})`,
+                    value: l.idLiquidacion!
+                }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar las liquidaciones.')
         });
     }
 

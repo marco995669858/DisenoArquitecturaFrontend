@@ -57,15 +57,21 @@ export class RolForm implements OnInit {
             permisos: [[] as PermisoAsignado[]]
         });
 
-        this.moduloService.listar().subscribe((r) => {
-            this.modulos = r.data ?? [];
-            this.cdr.detectChanges();
+        this.moduloService.listar().subscribe({
+            next: (r) => {
+                this.modulos = r.data ?? [];
+                this.cdr.detectChanges();
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar los módulos.')
         });
 
         if (data?.idRol) {
-            this.rolService.obtenerPermisos(data.idRol).subscribe((r) => {
-                this.formGroup.patchValue({ permisos: r.data ?? [] });
-                this.cdr.detectChanges();
+            this.rolService.obtenerPermisos(data.idRol).subscribe({
+                next: (r) => {
+                    this.formGroup.patchValue({ permisos: r.data ?? [] });
+                    this.cdr.detectChanges();
+                },
+                error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar los permisos del rol.')
             });
         }
     }

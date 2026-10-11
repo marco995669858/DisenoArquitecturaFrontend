@@ -56,11 +56,14 @@ export class MantenimientoForm implements OnInit {
             imputableInquilino: [data?.imputableInquilino ?? false]
         });
 
-        this.unidadService.listar().subscribe((r) => {
-            this.unidades = [
-                { label: 'Áreas comunes (sin unidad)', value: null },
-                ...(r.data ?? []).map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }))
-            ];
+        this.unidadService.listar().subscribe({
+            next: (r) => {
+                this.unidades = [
+                    { label: 'Áreas comunes (sin unidad)', value: null },
+                    ...(r.data ?? []).map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }))
+                ];
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar las unidades.')
         });
 
         this.formGroup.get('tipoGasto')!.valueChanges.subscribe(() => this.actualizarValidadoresMonto());

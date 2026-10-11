@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { PermisosService } from '@/app/core/services/permisos-service';
+import { NotificacionService } from '@/app/core/services/notificacion-service';
 
 interface MenuEntry {
     label: string;
@@ -82,14 +83,21 @@ const MENU: MenuGroup[] = [
 })
 export class AppMenu implements OnInit {
     private permisosService = inject(PermisosService);
+    private notificacion = inject(NotificacionService);
     private cdr = inject(ChangeDetectorRef);
 
     model: MenuItem[] = [];
 
     ngOnInit() {
-        this.permisosService.obtenerPermisos().subscribe(() => {
-            this.construirMenu();
-            this.cdr.detectChanges();
+        this.permisosService.obtenerPermisos().subscribe({
+            next: () => {
+                this.construirMenu();
+                this.cdr.detectChanges();
+            },
+            // Sin esto, si el backend no respondia al cargar la app, el menu
+            // lateral quedaba vacio sin ninguna explicacion -- parecia que la
+            // cuenta no tenia ningun modulo asignado, no que hubo un error.
+            error: () => this.notificacion.mostrarMensaje(0, 'No se pudo cargar el menú. Verifique su conexión.')
         });
     }
 

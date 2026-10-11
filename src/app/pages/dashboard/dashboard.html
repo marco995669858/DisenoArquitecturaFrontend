@@ -87,7 +87,7 @@
                     <div class="font-medium">{{ contrato.numeroUnidad }} &mdash; {{ contrato.nombreInquilino }}</div>
                     <div class="text-muted-color text-sm">Vence el {{ contrato.fechaFin }}</div>
                 </div>
-                <span class="text-orange-500 font-medium">{{ contrato.diasRestantes }} días</span>
+                <span class="text-orange-500 font-medium">{{ contrato.diasParaVencer }} días</span>
             </div>
             } @empty {
             <div class="text-muted-color">No hay contratos por vencer en los próximos 30 días.</div>

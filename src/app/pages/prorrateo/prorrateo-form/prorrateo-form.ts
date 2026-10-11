@@ -50,8 +50,11 @@ export class ProrrateoForm implements OnInit {
             montoCalculado: [data?.montoCalculado ?? null, [Validators.required, Validators.min(0)]]
         });
 
-        this.unidadService.listar().subscribe((r) => {
-            this.unidades = (r.data ?? []).map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }));
+        this.unidadService.listar().subscribe({
+            next: (r) => {
+                this.unidades = (r.data ?? []).map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar las unidades.')
         });
 
         ['consumoIndividual', 'consumoComunAsignado', 'costoUnitario'].forEach((campo) => {

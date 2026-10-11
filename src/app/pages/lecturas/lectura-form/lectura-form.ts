@@ -47,11 +47,14 @@ export class LecturaForm implements OnInit {
             { validators: this.validarMesDeLecturaCoincideConPeriodo }
         );
 
-        this.medidorService.listar().subscribe((r) => {
-            this.medidores = (r.data ?? []).map((m) => ({
-                label: `${m.numeroSerie} — ${m.tipoServicio} (${m.numeroUnidad ?? 'General'})`,
-                value: m.idMedidor!
-            }));
+        this.medidorService.listar().subscribe({
+            next: (r) => {
+                this.medidores = (r.data ?? []).map((m) => ({
+                    label: `${m.numeroSerie} — ${m.tipoServicio} (${m.numeroUnidad ?? 'General'})`,
+                    value: m.idMedidor!
+                }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar los medidores.')
         });
     }
 

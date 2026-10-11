@@ -55,8 +55,11 @@ export class LiquidacionForm implements OnInit {
             estado: [data?.estado ?? 'PENDIENTE', Validators.required]
         });
 
-        this.contratoService.listar().subscribe((r) => {
-            this.contratos = (r.data ?? []).map((c) => ({ label: `${c.numeroUnidad} — ${c.nombreInquilino}`, value: c.idContrato! }));
+        this.contratoService.listar().subscribe({
+            next: (r) => {
+                this.contratos = (r.data ?? []).map((c) => ({ label: `${c.numeroUnidad} — ${c.nombreInquilino}`, value: c.idContrato! }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar los contratos.')
         });
     }
 

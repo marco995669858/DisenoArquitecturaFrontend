@@ -43,7 +43,10 @@ export class NotificacionesBell implements OnInit {
     notificaciones: Notificacion[] = [];
 
     ngOnInit() {
-        this.permisosService.obtenerPermisos().subscribe(() => this.cargar());
+        // Degrada en silencio a proposito: si fallan los permisos aca, el
+        // menu lateral (app.menu.ts) ya le avisa al usuario por su cuenta;
+        // no hace falta duplicar el mismo aviso por la campanita.
+        this.permisosService.obtenerPermisos().subscribe({ next: () => this.cargar(), error: () => {} });
     }
 
     private cargar() {

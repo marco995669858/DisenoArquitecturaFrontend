@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, shareReplay, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment.development';
 import { ApiResponse } from '../models/apiResponse';
 import { PermisoAsignado } from '../models/modulo';
@@ -50,6 +50,15 @@ export class PermisosService {
                 this.permisosSignal.set(permisos);
                 this.cargados = true;
                 this.cargaEnCurso = null;
+            }),
+            // Sin esto, un fallo (ej. backend caido) dejaba cargaEnCurso
+            // apuntando para siempre a este observable ya fallido: con
+            // shareReplay, cualquier pantalla que pidiera permisos despues
+            // -- aunque el backend ya hubiera vuelto -- recibia el mismo
+            // error en bucle, sin reintentar nunca.
+            catchError((error) => {
+                this.cargaEnCurso = null;
+                return throwError(() => error);
             }),
             shareReplay(1)
         );

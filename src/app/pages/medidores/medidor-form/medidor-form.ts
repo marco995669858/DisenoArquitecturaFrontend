@@ -50,8 +50,11 @@ export class MedidorForm implements OnInit {
             numeroSerie: [data?.numeroSerie ?? '', [Validators.required, Validators.maxLength(50)]]
         });
 
-        this.unidadService.listar().subscribe((r) => {
-            this.unidades = (r.data ?? []).map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }));
+        this.unidadService.listar().subscribe({
+            next: (r) => {
+                this.unidades = (r.data ?? []).map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar las unidades.')
         });
 
         this.formGroup.get('tipoMedidor')!.valueChanges.subscribe((tipo) => {

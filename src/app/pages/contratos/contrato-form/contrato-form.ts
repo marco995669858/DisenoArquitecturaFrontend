@@ -62,14 +62,20 @@ export class ContratoForm implements OnInit {
         // tiene ESTE contrato se deja ver igual, aunque figure OCUPADO,
         // porque es precisamente la que el contrato ocupa.
         const idUnidadActual = data?.idUnidad;
-        this.unidadService.listar().subscribe((r) => {
-            this.unidades = (r.data ?? [])
-                .filter((u) => u.estado !== 'OCUPADO' || u.idUnidad === idUnidadActual)
-                .map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }));
+        this.unidadService.listar().subscribe({
+            next: (r) => {
+                this.unidades = (r.data ?? [])
+                    .filter((u) => u.estado !== 'OCUPADO' || u.idUnidad === idUnidadActual)
+                    .map((u) => ({ label: `${u.numeroUnidad} — Piso ${u.piso}`, value: u.idUnidad! }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar las unidades.')
         });
 
-        this.inquilinoService.listar().subscribe((r) => {
-            this.inquilinos = (r.data ?? []).map((i) => ({ label: `${i.nombreCompleto} (${i.numeroDocumento})`, value: i.idInquilino! }));
+        this.inquilinoService.listar().subscribe({
+            next: (r) => {
+                this.inquilinos = (r.data ?? []).map((i) => ({ label: `${i.nombreCompleto} (${i.numeroDocumento})`, value: i.idInquilino! }));
+            },
+            error: () => this.notificacion.mostrarMensaje(0, 'Ocurrió un problema al cargar los inquilinos.')
         });
     }
 
